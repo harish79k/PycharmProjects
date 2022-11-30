@@ -28,7 +28,7 @@ def envint(s: str, default: str) -> int | None:
     return int(v)
 
 
-SECRET_KEY = os.getenv("SECRET_KEY", "---")
+SECRET_KEY = os.getenv("SECRET_KEY", "1234")
 METRICS_KEY = os.getenv("METRICS_KEY")
 DEBUG = envbool("DEBUG", "True")
 ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "*").split(",")
@@ -56,7 +56,7 @@ INSTALLED_APPS = (
     "compressor",
     "hc.api",
     "hc.front",
-    "hc.payments",
+    "hc.payments",'whitenoise.runserver_nostatic',
 )
 
 
@@ -156,8 +156,8 @@ USE_TZ = True
 TIME_ZONE = "UTC"
 LOCALE_PATHS = (os.path.join(BASE_DIR, "locale"),)
 
-SITE_ROOT = os.getenv("SITE_ROOT", "http://localhost:8000")
-SITE_NAME = os.getenv("SITE_NAME", "Mychecks")
+SITE_ROOT = os.getenv("SITE_ROOT", "https://cron-monitor.open.money")
+SITE_NAME = os.getenv("SITE_NAME", "Cron Monitor")
 SITE_LOGO_URL = os.getenv("SITE_LOGO_URL")
 MASTER_BADGE_LABEL = os.getenv("MASTER_BADGE_LABEL", SITE_NAME)
 PING_ENDPOINT = os.getenv("PING_ENDPOINT", SITE_ROOT + "/ping/")
@@ -182,10 +182,10 @@ def immutable_file_test(path, url):
 WHITENOISE_IMMUTABLE_FILE_TEST = immutable_file_test
 
 # SMTP credentials for sending email
-EMAIL_HOST = os.getenv("EMAIL_HOST", "")
+EMAIL_HOST = os.getenv("EMAIL_HOST", "smtp.gmail.com")
 EMAIL_PORT = envint("EMAIL_PORT", "587")
-EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER", "")
-EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD", "")
+EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER", "noc-alerts@bankopen.co")
+EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD", "Open@123")
 EMAIL_USE_TLS = envbool("EMAIL_USE_TLS", "True")
 EMAIL_USE_SSL = envbool("EMAIL_USE_SSL", "False")
 EMAIL_USE_VERIFICATION = envbool("EMAIL_USE_VERIFICATION", "True")
@@ -290,3 +290,31 @@ ZULIP_ENABLED = envbool("ZULIP_ENABLED", "True")
 # Read additional configuration from hc/local_settings.py if it exists
 if os.path.exists(os.path.join(BASE_DIR, "hc/local_settings.py")):
     from .local_settings import *
+
+#CSRF
+
+CSRF_TRUSTED_ORIGINS = ['https://cron-monitor.open.money','http://localhost:8000']
+ALLOWED_HOSTS = ['127.0.0.1','cron-monitor.open.money',]
+DEBUG = False
+
+# The URL to use when referring to static files (where they will be served from)
+STATIC_URL = '/static/'
+
+# The absolute path to the directory where collectstatic will collect static files for deployment.
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+# Extra places for collectstatic to find static files.
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, 'static'),
+)
+
+# Simplified static file serving.
+# https://warehouse.python.org/project/whitenoise/
+
+#STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.CachedStaticFilesStorage'
+#STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
+#STATICFILES_STORAGE = "django.contrib.staticfiles.storage.ManifestStaticFilesStorage"
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
+
+WHITENOISE_AUTOREFRESH = True
+#TEMPLATE_DEBUG = True

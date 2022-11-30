@@ -4,6 +4,8 @@ from django.contrib import admin
 from django.urls import include, path
 
 from hc.accounts import views as accounts_views
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     path("admin/login/", accounts_views.login),
@@ -23,4 +25,4 @@ urlpatterns = [
     path("", include("hc.api.urls")),
     path("", include("hc.front.urls")),
     path("", include("hc.payments.urls")),
-]
+]+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
